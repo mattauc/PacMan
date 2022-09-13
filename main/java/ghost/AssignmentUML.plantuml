@@ -1,0 +1,219 @@
+@startuml Assignment2 - UML
+skinparam ClassAttributeIconSize 0
+class App {
+    + {static}WIDTH : int
+    + {static}HEIGHT : int
+    + {static}time : int
+    + {static}manager : GameManager
+    + setup(): void
+    + settings() : void
+    + draw() : void
+    + keyPressed() : void
+    + {static}main(args:String[]) : void
+}
+
+abstract class Game {
+    # {static}mapFile : String
+    # {static}lives : long
+    # {static}speed : long
+    # {static}frightenedLength : long
+    # {static}modeLengths : int[]
+    # {static}evilLength : long
+    - jsonFile : String
+    + parseFile() : void
+    + {abstract}drawBoard() : void
+    + {abstract}frameCheck(frameCount:int) : void
+    + {abstract}keyManager(input:int) : boolean
+}
+
+class GameManager {
+    - objects : HashMap<Character, PImage>
+    - ghosts : ArrayList<Ghost>
+    - bFormat : BoardFormat
+    - font : PFont
+    - timeReset : int
+    - win : boolean
+    - lose : boolean
+    - app : PApplet
+    - player : Waka
+    - debugger : boolean
+    - board : Entities[][]
+    + loadGame() : void
+    + loadImages() : boolean
+    + drawBoard() : void
+    + winCheck() : boolean
+    + dynamicAction() : boolean
+    + wakaHit(i:int) : boolean
+    + collectibles() : boolean
+    + frameCheck(frameCount:int) : void
+    + keyManager(input:int) : boolean
+    + resetConditions() : void
+    + drawLives() : void
+    + endConditions() : void
+    + gameOver() : boolean
+    + getTReset() : int
+}
+
+class BoardFormat {
+    - board : char[][]
+    - boardFile : String
+    - player : Waka
+    - ghosts : ArrayList<Ghost>
+    + readMap() : boolean
+    + gameBoard(graphics:HashMap<Character, PImage>) : Entities[][]
+    + getPlayer() : Waka
+    + getGhosts() : ArrayList<Ghost>
+}
+
+abstract class Entities {
+    # {static}moddedGrid : Entities[][]
+    # {static}wakaLocation : int[]
+    # {static}wakaDirection : String
+    # line : int[]
+    # alive : boolean
+    # start : int
+    # row : int
+    # col : int
+    # yPixel : int
+    # xPixel : int
+    # solid : boolean
+    # sprite : PImage
+    + tick() : void
+    + getPixel() : int[]
+    + isGhost() : boolean
+    + setImage(newImage:PImage) : void
+    + {static}setGrid(grid:Entities[][]) : void
+    + {static}setWaka(coordinates:int[],direction:String) : void
+    + killGhost() : void
+    + getSolid() : boolean
+    + getImage() : PImage
+    + setLine(y:int,x:int) : void
+    + reset() : void
+    + getTile() : int[]
+    + drawLine(app:PApplet) : void
+    + draw(app:PApplet) : void
+}
+
+class Fruit {
+    + {static}eaten : int
+    + {static}population: int
+    + tick() : void
+    + {static}resetEaten() : void
+    + {static}resetPop() : void
+}
+
+class Walls {
+}
+
+abstract class Collectibles {
+    # tagged : boolean
+}
+
+class SuperFruit {
+    - {static}active : boolean
+    + {static}isActive() : boolean
+    + {static}setActive(check:boolean) : void
+    + tick() : void
+}
+
+class Soda {
+    - {static}active : boolean
+    + {static}isActive() : boolean
+    + {static}setActive(check:boolean) : void
+    + tick() : void
+}
+
+class Waka {
+    - openState : PImage
+    - up : PImage
+    - down : PImage
+    - left : PImage
+    - right : PImage
+    - lives : long
+    - speed : long
+    - queue : String[]
+    + tick() : void
+    + tileUpdate(check:boolean) : void
+    + openingCheck() : void
+    + reset() : void
+    + setMove(input:String) : void
+    + setSprite(mode:PImage) : void
+    + getCurrentSprite() : PImage
+    + isClosed() : boolean
+    + setClosed() : void
+    + getMove() : String
+    + setSpeed(speed:long) : void
+    + setLives(lives:long) : void
+    + getLives() : long
+}
+
+abstract class Ghost {
+    # {static}mode : boolean
+    # {static}frightenedLength : long
+    # {static}speed : long
+    # {static}modeLength : int[]
+    # {static}evilLength : long
+    # {static}scared : PImage
+    # {static}spook : PImage
+    # {static}time : int
+    # {static}index : int
+    # {static}chaserCoords : int[]
+    # {static}frightened : boolean
+    # {static}invisible : boolean
+    - colour : PImage
+    - timeStart : int
+    - evilStart : int
+    - input : String
+    + tick() : void
+    + tileUpdate(check:boolean) : void
+    + openingCheck() : void
+    + randomMovement() : void
+    + intersectionCheck() : HashMap<String, Double>
+    + wakaCheck(y:int,x:int,num:int) : int[]
+    + frightenedTurn() : boolean
+    + locateStep(row:int,col:int) : double
+    + {abstract}updateStep(row:int,col:int) : int[]
+    + {static}setMode(check:boolean) : void
+    + collectibleChecK() : void
+    + {static}setConditions(modeL:int[],frightenedL:long,num:long,evil:long) : void
+    + {static}timeCount(value:int) : void
+    + {static}isFrightened() : boolean
+    + {static}isInvisible() : boolean
+    + {static}setFrightened(check:boolean) : void
+    + {static}setInvisible(check:boolean) : void
+    + isAlive() : boolean
+    + setChaser(coords:int[]) : void
+    + isGhost() : boolean
+    + reset() : void
+}
+
+class Whim {
+    + updateStep(row:int,col:int) : int[]
+}
+
+class Ignorant {
+    + updateStep(row:int,col:int) : int[]
+}
+
+class Chaser {
+    + updateStep(row:int,col:int) : int[]
+}
+
+class Ambusher {
+    + updateStep(row:int,col:int) : int[]
+}
+
+Game <|.. GameManager
+Entities <|.. Ghost
+Entities <|.. Waka
+Entities <|.. Fruit
+Entities <|.. Walls
+Entities <|.. Collectibles
+Collectibles <|.. SuperFruit
+Collectibles <|.. Soda
+Ghost <|.. Whim
+Ghost <|.. Ignorant
+Ghost <|.. Chaser
+Ghost <|.. Ambusher
+App - GameManager : Initializes
+@enduml
